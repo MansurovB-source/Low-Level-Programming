@@ -37,7 +37,7 @@ int main(int argc, char** argv) {
 
 	header = rotate_header(header);
 	puts("Hhhhhhhheeeeeeeee1");
-	image = rotate_right(image);
+	image = rotate_left(image);
 	puts("Hhhhhhhheeeeeeeee2");
 	save_bmp(file, header, image);
 	puts("Hhhhhhhheeeeeeeee3");
