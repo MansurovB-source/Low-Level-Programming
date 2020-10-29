@@ -9,21 +9,18 @@ int main(int argc, char** argv) {
 	if(open_file(&file, o_filename) != OPEN_OK) {
 		exit(OPEN_ERR);
 	}
-	puts("Hhhhhhhh");
 
 	struct bmp_header* header = (struct bmp_header*) malloc(sizeof(struct bmp_header));
 	
 	if(read_header(file, header) != READ_OK) {
 		exit(READ_INVALID_HEADER);
 	}
-	puts("Hhhhhhhh");
 
 	fseek(file, header -> bOffBits, SEEK_SET);
 
 	struct image* image = read_image(file, header -> biHeight, header -> biWidth);
 
 	fclose(file);
-	puts("Hhhhhhhh");
 
 	FILE* s_file;
 	char* s_filename = "./res/picture-1.bmp";
@@ -33,15 +30,10 @@ int main(int argc, char** argv) {
 	// if(open_file(&s_file, s_filename) != OPEN_OK) {
 	// 	exit(OPEN_ERR);
 	// }
-	puts("Hhhhhhhheeeeeeeee");
 
 	header = rotate_header(header);
-	puts("Hhhhhhhheeeeeeeee1");
-	image = rotate_right(image);
-	puts("Hhhhhhhheeeeeeeee2");
+	image = rotate_left(image);
 	save_bmp(file, header, image);
-	puts("Hhhhhhhheeeeeeeee3");
 	fclose(file); 
-	puts("Hhhhhhhheeeeeeeee4");
 	return 0;
 }
