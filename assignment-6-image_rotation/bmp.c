@@ -3,8 +3,8 @@
 #include <stdlib.h>
 #include "./bmp_struct.h"
 
-enum open_status open_file(FILE** file, const char* filename) {
-	if((*file = fopen(filename, "rwb")) == NULL) return OPEN_ERR;
+enum open_status open_file(FILE** file, const char* filename, const char* mod) {
+	if((*file = fopen(filename, mod)) == NULL) return OPEN_ERR;
 	return OPEN_OK;
 }
 
@@ -24,9 +24,8 @@ enum read_status read_header(FILE* file, struct bmp_header* header) {
 	struct image* img = (struct image*) malloc(sizeof(struct image));
 	img -> height = height;
 	img -> width = width;
-	uint8_t padding = (4 - ((width * sizeof(struct pixel)) % 4)) % 4;
+	uint8_t padding = (width * sizeof(struct pixel)) % 4;
 	img -> data = (struct  pixel*) malloc(img -> height * (img -> width * sizeof(struct pixel) + padding));
-	//img -> data = (struct  pixel*) malloc(img -> height * (img -> width * sizeof(struct pixel)));
 	for(uint32_t i = 0; i < img -> height; i++) {
 		fread(img -> data + i * img -> width, sizeof(struct pixel), img -> width, file);
 		fseek(file, padding, SEEK_CUR);
@@ -34,7 +33,7 @@ enum read_status read_header(FILE* file, struct bmp_header* header) {
 	return img;
 }
 
-struct bmp_header* rotate_header(struct bmp_header* o_header) {
+struct bmp_header* rotate_header(const struct bmp_header* o_header) {
 	struct bmp_header* new_header = (struct bmp_header*) malloc(sizeof(struct bmp_header));
 	
 	new_header -> bfType = 0x4D42;
@@ -42,7 +41,7 @@ struct bmp_header* rotate_header(struct bmp_header* o_header) {
 	new_header -> biWidth = o_header -> biHeight;
 	new_header -> biHeight = o_header -> biWidth;
 
-	uint8_t padding = (4 - ((new_header -> biWidth * sizeof(struct pixel)) % 4)) % 4;
+	uint8_t padding = (new_header -> biWidth * sizeof(struct pixel)) % 4;
 
 	new_header -> bfileSize = sizeof(struct bmp_header) + (new_header -> biWidth * sizeof(struct pixel) + padding) * new_header -> biHeight;
 	new_header -> bfReserved = 0;
@@ -59,7 +58,7 @@ struct bmp_header* rotate_header(struct bmp_header* o_header) {
 	return new_header;
 }
 
-struct image* rotate_left(struct image* source) {
+struct image* rotate_left(const struct image* source) {
 	struct image* new_image = (struct image*) malloc(sizeof(struct image));
   	new_image -> height = source -> width;
  	new_image -> width = source -> height;
@@ -73,24 +72,8 @@ struct image* rotate_left(struct image* source) {
  	return new_image;
 }
 
-// struct image* rotate_right(struct image* source) {
-// 	struct image* new_image = (struct image*) malloc(sizeof(struct image));
-//   	new_image -> height = source -> width;
-//  	new_image -> width = source -> height;
-//  	new_image -> data = (struct pixel*) malloc(new_image -> height * new_image -> width * sizeof(struct pixel));
-//  	for(uint32_t i = 0; i < new_image -> height; i++) {
-//  		for(uint32_t j = 0; j < new_image -> width; j++) {
-//  			*(new_image -> data + j * new_image -> width + j) = *(source -> data + j * source -> width + (source -> width - 1 - i));
-//  		}
-//  	}
-
-//  	return new_image;
-// }
-
-
-void save_bmp(FILE* file, struct bmp_header* header, struct image* img) {	
-	uint8_t padding = (4 - ((header -> biWidth * sizeof(struct pixel)) % 4)) % 4;
-	//header -> biSizeImage = (img -> width * sizeof(struct pixel) + padding) * img -> height;
+void save_bmp(FILE* file, const struct bmp_header* header, const struct image* img) {	
+	uint8_t padding = (header -> biWidth * sizeof(struct pixel)) % 4;
 	fwrite(header, sizeof(struct bmp_header), 1, file);
 	for(uint32_t i = 0; i < img -> height; i++) {
 		fwrite(img -> data + i * img -> width, sizeof(struct pixel), img -> width, file);

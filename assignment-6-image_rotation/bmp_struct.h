@@ -55,12 +55,11 @@ enum open_status {
 	OPEN_ERR
 };
 
-enum open_status open_file(FILE** file, const char* filename);
+enum open_status open_file(FILE** file, const char* filename, const char* mod);
 enum read_status read_header(FILE* file, struct bmp_header* header);
 struct image* read_image(FILE* file, uint32_t height, uint32_t width);
-struct bmp_header* rotate_header(struct bmp_header* o_header);
-struct image* rotate_left(struct image* source);
-struct image* rotate_right(struct image* source);
-void save_bmp(FILE* file, struct bmp_header* header, struct image* img);
+struct bmp_header* rotate_header(const struct bmp_header* o_header);
+struct image* rotate_left(const struct image* source);
+void save_bmp(FILE* file, const struct bmp_header* header, const struct image* img);
 
 #endif
