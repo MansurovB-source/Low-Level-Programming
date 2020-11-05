@@ -5,8 +5,9 @@
 
 int main(int argc, char** argv) {
 	FILE* file;
-	char* o_filename = "./res/picture-2.bmp";
+	char* o_filename = "./res/1_1.bmp";
 	if(open_file(&file, o_filename, "rb") != OPEN_OK) {
+		puts("sssss");
 		exit(OPEN_ERR);
 	}
 
@@ -22,7 +23,7 @@ int main(int argc, char** argv) {
 
 	fclose(file);
 
-	char* s_filename = "./res/picture-3.bmp";
+	char* s_filename = "./res/Lights-1.bmp";
 
 	if(open_file(&file, s_filename, "wb") != OPEN_OK) {
 		exit(OPEN_ERR);

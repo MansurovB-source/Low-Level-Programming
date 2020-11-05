@@ -4,3 +4,6 @@ OUTPUT = main
 
 all: 
 	$(CC) -o $(OUTPUT) $(SRC)
+
+clean:
+	rm -f main *.o

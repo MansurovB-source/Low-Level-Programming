@@ -22,15 +22,24 @@ enum read_status read_header(FILE* file, struct bmp_header* header) {
 
  struct image* read_image(FILE* file, uint32_t height, uint32_t width) {
 	struct image* img = (struct image*) malloc(sizeof(struct image));
+	printf("%zu\n", sizeof(struct pixel));
 	img -> height = height;
 	img -> width = width;
-	uint8_t padding = (width * sizeof(struct pixel)) % 4;
+	// puts("------------------------");
+	// printf("%d\n", img -> height);
+	// printf("%d\n", img -> width);
+	uint8_t padding = 4 - ((width * sizeof(struct pixel)) % 4);
+	// printf("%d\n", padding);
 	img -> data = (struct  pixel*) malloc(img -> height * (img -> width * sizeof(struct pixel) + padding));
 	for(uint32_t i = 0; i < img -> height; i++) {
 		fread(img -> data + i * img -> width, sizeof(struct pixel), img -> width, file);
 		fseek(file, padding, SEEK_CUR);
 	}
+	// printf("%d\n", img -> data[1].b);
+	// printf("%d\n", img -> data[1].g);
+	// printf("%d\n", img -> data[1].r);
 	return img;
+	puts("------------------------");
 }
 
 struct bmp_header* rotate_header(const struct bmp_header* o_header) {
@@ -41,7 +50,7 @@ struct bmp_header* rotate_header(const struct bmp_header* o_header) {
 	new_header -> biWidth = o_header -> biHeight;
 	new_header -> biHeight = o_header -> biWidth;
 
-	uint8_t padding = (new_header -> biWidth * sizeof(struct pixel)) % 4;
+	uint8_t padding = 4 - ((new_header -> biWidth * sizeof(struct pixel)) % 4);
 
 	new_header -> bfileSize = sizeof(struct bmp_header) + (new_header -> biWidth * sizeof(struct pixel) + padding) * new_header -> biHeight;
 	new_header -> bfReserved = 0;
@@ -73,8 +82,16 @@ struct image* rotate_left(const struct image* source) {
 }
 
 void save_bmp(FILE* file, const struct bmp_header* header, const struct image* img) {	
-	uint8_t padding = (header -> biWidth * sizeof(struct pixel)) % 4;
+	uint8_t padding = 4 - ((header -> biWidth * sizeof(struct pixel)) % 4);
 	fwrite(header, sizeof(struct bmp_header), 1, file);
+	// puts("------------------------");
+	// printf("%d\n", img -> data[2].b);
+	// printf("%d\n", img -> data[2].g);
+	// printf("%d\n", img -> data[2].r);
+	// printf("%d\n", img -> height);
+	// printf("%d\n", img -> width);
+	// printf("%d\n", padding);
+	// puts("------------------------");
 	for(uint32_t i = 0; i < img -> height; i++) {
 		fwrite(img -> data + i * img -> width, sizeof(struct pixel), img -> width, file);
 		fseek(file, padding, SEEK_CUR);

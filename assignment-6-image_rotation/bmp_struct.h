@@ -26,13 +26,14 @@ struct __attribute__((packed)) bmp_header {
 	uint32_t biClrImportant;
 };
 
-struct __attribute__((packed)) pixel {
-	uint8_t r;
-	uint8_t g;
+struct __attribute__(( packed )) pixel {
 	uint8_t b;
+	uint8_t g;
+	uint8_t r;
+
 };
 
-struct __attribute__((packed)) image {
+struct image {
 	uint32_t height;
 	uint32_t width;
 	struct pixel* data;
