@@ -1,13 +1,18 @@
 #include <stdint.h>
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
+#include <errno.h>
 #include "./bmp_struct.h"
 
 int main(int argc, char** argv) {
+	while(1) {
+		puts("10");
+	}
+
 	FILE* file;
-	char* o_filename = "./res/1_1.bmp";
+	char* o_filename = "./res/103_101.bmp";
 	if(open_file(&file, o_filename, "rb") != OPEN_OK) {
-		puts("sssss");
 		exit(OPEN_ERR);
 	}
 
@@ -23,7 +28,7 @@ int main(int argc, char** argv) {
 
 	fclose(file);
 
-	char* s_filename = "./res/Lights-1.bmp";
+	char* s_filename = "./res/1_1-11.bmp";
 
 	if(open_file(&file, s_filename, "wb") != OPEN_OK) {
 		exit(OPEN_ERR);
