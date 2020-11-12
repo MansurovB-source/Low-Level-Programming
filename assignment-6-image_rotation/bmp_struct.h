@@ -1,5 +1,5 @@
-#ifndef BMP_STRUCT_H
-#define BMP_STRUCT_H
+#ifndef BMP_STRUCT_H_
+#define BMP_STRUCT_H_
 
 #include <stdint.h>
 #include <stdio.h>
@@ -62,5 +62,10 @@ struct image* read_image(FILE* file, uint32_t height, uint32_t width);
 struct bmp_header* rotate_header(const struct bmp_header* o_header);
 struct image* rotate_left(const struct image* source);
 void save_bmp(FILE* file, const struct bmp_header* header, const struct image* img);
+uint8_t set_padding(uint32_t width);
+struct image* create_image(uint32_t height, uint32_t width);
+struct image* blur(const struct image* source);
+struct image* rotate(const struct image* source, double angle);
+struct image* mirror_image(const struct image* source);
 
 #endif
