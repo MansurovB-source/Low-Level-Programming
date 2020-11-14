@@ -6,6 +6,7 @@
 #include <stdlib.h>
 
 #define BM 0x4D42
+#define PI 3.14151592654
 
 struct __attribute__((packed)) bmp_header {
 	uint16_t bfType;
@@ -39,33 +40,13 @@ struct image {
 	struct pixel* data;
 };
 
-enum read_status {
-	READ_OK,
-	READ_INVALID_SIGNATURE,
-	READ_INVALID_BITS,
-	READ_INVALID_HEADER
-};
-
-enum write_status {
-	WRITE_OK,
-	WRITE_ERROR
-};
-
-enum open_status {
-	OPEN_OK,
-	OPEN_ERR
-};
-
-enum open_status open_file(FILE** file, const char* filename, const char* mod);
-enum read_status read_header(FILE* file, struct bmp_header* header);
-struct image* read_image(FILE* file, uint32_t height, uint32_t width);
-struct bmp_header* rotate_header(const struct bmp_header* o_header);
-struct image* rotate_left(const struct image* source);
-void save_bmp(FILE* file, const struct bmp_header* header, const struct image* img);
 uint8_t set_padding(uint32_t width);
-struct image* create_image(uint32_t height, uint32_t width);
-struct image* blur(const struct image* source);
-struct image* rotate(const struct image* source, double angle);
-struct image* mirror_image(const struct image* source);
+struct image create_image(uint32_t height, uint32_t width);
+struct image blur(const struct image* source);
+struct image rotate(const struct image* source, double angle);
+struct image rotate_2(struct image* oriin, double angle);
+struct image mirror_image(const struct image* source);
+struct image rotate_left(const struct image* source);
+struct image calc_new_size(const struct image *origin, double angle);
 
 #endif
