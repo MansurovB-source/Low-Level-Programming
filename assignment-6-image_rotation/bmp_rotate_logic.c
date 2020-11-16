@@ -98,52 +98,53 @@ struct image rotate(const struct image* source, double angle) {
 	}
 	return new_image;
 }
- 
+
 struct image rotate_2(struct image* source, double angle) {
 	float angle_on_radian = angle * (double) PI / 180;
 	float cos_a = cos(angle_on_radian);
 	float sin_a = sin(angle_on_radian);
 
 	struct image tmp = calc_new_size(source, angle_on_radian);
-	struct image new_image = create_image(tmp.height, tmp.width);
+	struct image new_image = create_image(tmp.width, tmp.height);
 
-	float horizontal_center = (float)(source -> width / 2);
-	float vertical_center = (float)(source -> height / 2);
+	float horizontal_center = (float)(new_image.width / 2);
+	float vertical_center = (float)(new_image.height / 2);
 
-	float x_center = (float)(new_image.width / 2);
-	float y_center = (float)(new_image.height / 2);
-	float r = sqrt(x_center * x_center + y_center * y_center);
-	float b = atan2(1. * y_center, x_center);
-	float cos_b = cos(b);
-	float sina_b = sin(b);
+	float x_center = (float)(source -> width / 2);
+	float y_center = (float)(source -> height / 2);
+	
 
-	for(int32_t i = 0 - horizontal_center; i < new_image.width - horizontal_center; i++) {
-		for(int32_t j = 0 - vertical_center; j < new_image.height - vertical_center; j++) {
-			int32_t n_i = round(i * cos_a - j * sin_a + r * cos_b);
-			int32_t n_j = round(i * sina_b + j * cos_a + r * sina_b);
+	for(int32_t x = 0 - horizontal_center; x < new_image.width - horizontal_center; x++) {
+		for(int32_t y = 0 - vertical_center; y < new_image.height - vertical_center; y++) {
+			int32_t n_x = round(x * cos_a + y * sin_a + x_center);
+			int32_t n_y = round(y * cos_a - x * sin_a + y_center);
 
-			if(n_i < 2 * x_center && n_i >= 0 && n_j < 2 * y_center && n_j >= 0) {
-				*(new_image.data + ((i + (int32_t)horizontal_center)* new_image.width) + j + (int32_t)vertical_center) = *(source -> data + (n_i * source -> width) + n_j); 
+			if(n_x <= source -> width && n_x >= 0 && n_y < source -> width && n_y >= 0) {
+				*(new_image.data + ((y + (int32_t)vertical_center)* new_image.width) + (x + (int32_t)horizontal_center)) = *(source -> data + (n_y * source -> width) + n_x); 
 			}
 		}
 	}
 	return new_image;
 }
-uint8_t set_padding(uint32_t width) {
+
+static uint8_t set_padding(uint32_t width) {
 	uint8_t padding = (4 - (width * sizeof(struct pixel)) % 4) % 4;
 	return padding;
 }
 
-struct image create_image(uint32_t height, uint32_t width) {
+static struct image create_image(uint32_t height, uint32_t width) {
 	struct image new_image;
   	new_image.height = height;
  	new_image.width = width;
+ 	//printf("%u %u -- create_image\n", new_image.height, new_image.width);
  	new_image.data = (struct pixel*) malloc(new_image.height * new_image.width * sizeof(struct pixel));
  	return new_image;
 }
 
-struct image calc_new_size(const struct image *source, double angle) {
-	struct image new_image = *source;
+static struct image calc_new_size(const struct image *source, double angle) {
+	struct image new_image;
 	new_image.height = round(cos(angle) * source -> width + sin(angle) * source -> height);
 	new_image.width = round(sin(angle) * source -> width + cos(angle) * source -> height);
+	new_image.data = NULL;
+	return new_image;
 }

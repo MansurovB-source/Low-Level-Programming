@@ -28,7 +28,9 @@ void read_bmp_file(const char* r_file, const char* w_file, char mode, double ang
 		exit(OPEN_ERR);
 	}
 	if(mode == 'a') {
-		image = rotate(&image, angle);
+		//image = rotate(&image, angle);
+		image = rotate_2(&image, angle);
+		//image = rotate_3(&image, angle);
 	} else if(mode == 'm') {
 		image = mirror_image(&image);
 	} else {
@@ -68,7 +70,6 @@ enum read_status read_header(FILE* file, struct bmp_header* header) {
 }
 
 struct bmp_header rotate_header(const struct bmp_header* o_header, uint32_t height, uint32_t width) {
-	//struct bmp_header* new_header = (struct bmp_header*) malloc(sizeof(struct bmp_header));
 	struct bmp_header new_header;
 	new_header.bfType = BM;
 	new_header.biBitCount = 24;
