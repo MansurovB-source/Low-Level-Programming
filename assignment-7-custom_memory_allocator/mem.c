@@ -65,7 +65,7 @@ static size_t round_memory(size_t n) {
 
 static struct mem* find_free_chunk(size_t query, struct mem* ptr) {
 	while(ptr) {
-		if(ptr -> is_free && ptr -> capacity >= query)
+		if(ptr -> is_free && ptr -> capacity >= query + sizeof(struct mem))
 			return ptr;
 		ptr = ptr -> next;
 	}
@@ -106,8 +106,8 @@ static struct mem* allocate_new_memory(struct mem* ptr, size_t query) {
 }
 
 static struct mem* get_memory_chunk(struct mem* ptr, struct mem* chunk) {
-	size_t i = 1;
-	for(; ptr && ptr != chunk; ptr = ptr -> next)
-		printf("%zu\n", i++);
+	while(ptr != NULL && ptr != chunk) {
+		ptr = ptr -> next;
+	}
 	return ptr;
 }
