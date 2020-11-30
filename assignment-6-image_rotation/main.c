@@ -3,18 +3,23 @@
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include "./bmp_reader.h"
-#include "./bmp_struct.h"
+
+void transform(const char* r_file, const char* w_file, char* mode, char transform, double angle);
 
 int main(int argc, char** argv) {
 	int rez = 0;
-	char mode = 'a';
+	char trans = 'a';
+	char* mode;
 	int angle = 45;
-	while((rez = getopt(argc, argv, "m:a:")) != -1) {
+	while((rez = getopt(argc, argv, "m:t:a:")) != -1) {
 		switch(rez) {
 			case 'm': 
-				mode = *optarg;
+				mode = optarg;
 				printf("Found argument \"m = %s\".\n", optarg);
+				break;
+			case 't': 
+				trans = *optarg;
+				printf("Found argument \"t = %s\".\n", optarg);
 				break;
 			case 'a':
 				angle = atoi(optarg);
@@ -26,7 +31,7 @@ int main(int argc, char** argv) {
 		}
 	}
 	puts("-----start-----");
-	read_bmp_file("./res/p.bmp", "./res/p1.bmp", mode, (double) angle);
+	transform("./res/p.bmp", "./res/p1.bmp", mode, trans, (double) angle);
 	puts("-----end-----");
 	return 0;
 }

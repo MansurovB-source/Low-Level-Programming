@@ -3,15 +3,22 @@
 #include <stdlib.h>
 #include <math.h>
 #include "./bmp_struct.h"
-#include "./bmp_reader.h"
+#include "./image_struct.h"
 
-void read_bmp_file(const char* r_file, const char* w_file, char mode, double angle) {
+static enum read_status read_header(FILE* file, struct bmp_header* header);
+static struct image read_image(FILE* file, uint32_t height, uint32_t width);
+static struct bmp_header new_header(const struct bmp_header* o_header, uint32_t height, uint32_t width);
+static void save_bmp(FILE* file, const struct bmp_header* header, const struct image img);
+static struct image select_mode(struct image image, char mode, double angle);
+
+enum open_status open_file(FILE** file, const char* filename, const char* mod);
+
+void read_bmp_file(const char* r_file, const char* w_file, char transform, double angle) {
 	FILE* file;
 	if(open_file(&file, r_file, "rb") != OPEN_OK) {
 		puts("Something wrong with read file");
 		exit(OPEN_ERR);
 	}
-
 	struct bmp_header header;
 	if(read_header(file, &header) != READ_OK) {
 		puts("Invalid header");
@@ -27,21 +34,22 @@ void read_bmp_file(const char* r_file, const char* w_file, char mode, double ang
 		puts("Somethign wrong with write file");
 		exit(OPEN_ERR);
 	}
-	if(mode == 'a') {
-		//image = rotate(&image, angle);
-		image = rotate_2(&image, angle);
-		//image = rotate_3(&image, angle);
-	} else if(mode == 'm') {
-		image = mirror_image(&image);
-	} else {
-		image = blur(&image);
-	}
-	header = rotate_header(&header, image.height, image.width);
+	image = select_mode(image, transform, angle);
+	header = new_header(&header, image.height, image.width);
 	save_bmp(file, &header, image);
-	
 	fclose(file);
 }
- 
+
+struct image select_mode(struct image img, char transform, double angle) {
+	if(transform == 'r') {
+		return rotate(&img, angle);
+	} else if(transform == 'm') {
+		return mirror_image(&img);
+	} else {
+		return blur(&img);
+	}
+}
+
 enum open_status open_file(FILE** file, const char* filename, const char* mod) {
 	if((*file = fopen(filename, mod)) == NULL) return OPEN_ERR;
 	return OPEN_OK;
@@ -69,25 +77,25 @@ enum read_status read_header(FILE* file, struct bmp_header* header) {
 	return img;
 }
 
-struct bmp_header rotate_header(const struct bmp_header* o_header, uint32_t height, uint32_t width) {
-	struct bmp_header new_header;
-	new_header.bfType = BM;
-	new_header.biBitCount = 24;
-	new_header.biWidth = width;
-	new_header.biHeight = height;
-	uint8_t padding = set_padding(new_header.biWidth);
-	new_header.bfileSize = sizeof(struct bmp_header) + (new_header.biWidth * sizeof(struct pixel) + padding) * new_header.biHeight;
-	new_header.bfReserved = 0;
-	new_header.bOffBits = sizeof(struct bmp_header);
-	new_header.biSize = 40;
-	new_header.biPlanes = 1;
-	new_header.biCompression = 0;
-	new_header.biSizeImage = (new_header.biWidth * sizeof(struct pixel) + padding) * new_header.biHeight;
-	new_header.biXPelsPerMeter = 0;
-	new_header.biYPelsPerMeter = 0;
-	new_header.biClrUsed = 0;
-	new_header.biClrImportant = 0;
-
+struct bmp_header new_header(const struct bmp_header* o_header, uint32_t height, uint32_t width) {
+	uint8_t padding = set_padding(width);
+	struct bmp_header new_header = {
+		BM, 
+		sizeof(struct bmp_header) + (width * sizeof(struct pixel) + padding) * height, 
+		0, 
+		sizeof(struct bmp_header), 
+		40, 
+		width, 
+		height, 
+		1, 
+		24, 
+		0, 
+		-1, 
+		0, 
+		0, 
+		0, 
+		0
+	};
 	return new_header;
 }
 
