@@ -1,4 +1,4 @@
-SRC = bmp_struct.h bmp_reader.h bmp.c bmp_rotate_logic.c main.c
+SRC = image_struct.h bmp_struct.h rotate_logic.c bmp.c read_file.c main.c
 CC = gcc
 OUTPUT = main
 
