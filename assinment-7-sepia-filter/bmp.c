@@ -4,6 +4,7 @@
 #include <math.h>
 #include "./bmp_struct.h"
 #include "./image_struct.h"
+#include "./sepia_func.h"
 
 static enum read_status read_header(FILE* file, struct bmp_header* header);
 static struct image read_image(FILE* file, uint32_t height, uint32_t width);
@@ -45,8 +46,11 @@ struct image select_mode(struct image img, char transform, double angle) {
 		return rotate(&img, angle);
 	} else if(transform == 'm') {
 		return mirror_image(&img);
-	} else {
+	} else if(transform == 'b') {
 		return blur(&img);
+	} else {
+		//return sepia_c_inplace(&img);
+		return sepia_sse(&img);
 	}
 }
 

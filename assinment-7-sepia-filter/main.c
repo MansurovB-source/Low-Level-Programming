@@ -9,7 +9,7 @@ void transform(const char* r_file, const char* w_file, char* mode, char transfor
 int main(int argc, char** argv) {
 	int rez = 0;
 	char trans = 'a';
-	char* mode;
+	char* mode = "bmp";
 	int angle = 45;
 	while((rez = getopt(argc, argv, "m:t:a:")) != -1) {
 		switch(rez) {
@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
 		}
 	}
 	puts("-----start-----");
-	transform("./res/p.bmp", "./res/p1.bmp", mode, trans, (double) angle);
+	transform("./res/pr.bmp", "./res/pr1.bmp", mode, trans, (double) angle);
 	puts("-----end-----");
 	return 0;
 }
