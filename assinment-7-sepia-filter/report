@@ -1,0 +1,4 @@
+cycle 100
+Time elapsed in microseconds (on C): 2967980
+Time elapsed in microseconds (on ASM with SSE): 1768602
+Diff between C and ASM: 1199378

@@ -48,8 +48,11 @@ struct image select_mode(struct image img, char transform, double angle) {
 		return mirror_image(&img);
 	} else if(transform == 'b') {
 		return blur(&img);
-	} else {
+	} else if(transform == 'x') {
+		test_func(&img);
+		return sepia_sse(&img);
 		//return sepia_c_inplace(&img);
+	} else {
 		return sepia_sse(&img);
 	}
 }
