@@ -27,7 +27,7 @@ clean:
 	rm -f main *.o
 
 start:
-	./main -m bmp -t x -a 290
+	./main -m bmp -t s -a 290
 
 # CC=gcc
 # CFLAGS=-Wall -Wextra -Wpedantic

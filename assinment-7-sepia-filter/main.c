@@ -31,7 +31,7 @@ int main(int argc, char** argv) {
 		}
 	}
 	puts("-----start-----");
-	transform("./res/pr.bmp", "./res/pr1.bmp", mode, trans, (double) angle);
+	transform("./res/p.bmp", "./res/p1.bmp", mode, trans, (double) angle);
 	puts("-----end-----");
 	return 0;
 }
