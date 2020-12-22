@@ -11,6 +11,7 @@ int main(int argc, char** argv) {
 	char trans = 'a';
 	char* mode;
 	int angle = 45;
+	puts("-----start-----");
 	while((rez = getopt(argc, argv, "m:t:a:")) != -1) {
 		switch(rez) {
 			case 'm': 
@@ -30,7 +31,6 @@ int main(int argc, char** argv) {
 				break;
 		}
 	}
-	puts("-----start-----");
 	transform("./res/p.bmp", "./res/p1.bmp", mode, trans, (double) angle);
 	puts("-----end-----");
 	return 0;

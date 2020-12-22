@@ -43,6 +43,7 @@ enum open_status {
 	OPEN_ERR
 };
 
-void read_bmp_file(const char* r_file, const char* w_file, char transform, double angle);
+
+void start(const char* r_file, const char* w_file, char transform, double angle);
 
 #endif

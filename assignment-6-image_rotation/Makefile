@@ -8,6 +8,9 @@ all:
 clean:
 	rm -f main *.o
 
+start:
+	./main -m bmp -t b -a 290
+
 # CC=gcc
 # CFLAGS=-Wall -Wextra -Wpedantic
 # LDFLAGS=

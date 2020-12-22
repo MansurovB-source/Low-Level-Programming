@@ -4,6 +4,7 @@
 
 static uint32_t calc_new_height(const struct image* source, double angle);
 static uint32_t calc_new_width(const struct image* source, double angle);
+static void pixel_blur(struct pixel* const new_pixel, const struct pixel* source, int32_t width)
 
 struct image rotate_left(const struct image* source) {
 	struct image new_image = create_image(source -> height, source -> width);
@@ -25,7 +26,7 @@ struct image mirror_image(const struct image* source) {
  		}
  	}
 
- 	if(new_image.width / 2 != 0) {
+ 	if(new_image.width % 2 != 0) {
  		for(uint32_t i = 0; i < new_image.height; i++) {
  			*(new_image.data + (i * new_image.width) + new_image.width + 1) = 
  			*(source -> data + (i * new_image.width) + new_image.width + 1);
@@ -34,32 +35,31 @@ struct image mirror_image(const struct image* source) {
  	return new_image;
 }
 
+void pixel_blur(struct pixel* const new_pixel, const struct pixel* source, int32_t width) {
+	uint16_t b = 0;
+ 	uint16_t g = 0;
+ 	uint16_t r = 0;
+
+	for(int32_t i = -1; i < 2; i++) {
+ 		for (int32_t j = -1; j < 2; j++) {
+ 			b += (source + (i * width) + j) -> b;
+ 			g += (source + (i * width) + j) -> g;
+ 			r += (source + (i * width) + j) -> r;
+		}
+ 	}
+
+ 			new_pixel -> b = b / 9;
+ 			new_pixel -> g = g / 9;
+ 			new_pixel -> r = r / 9;
+}
 
 struct image blur(const struct image* source) {
 	struct image new_image = create_image(source -> height, source -> width);
- 	uint16_t b = 0;
- 	uint16_t g = 0;
- 	uint16_t r = 0;
 
  	// the inner part
  	for(uint32_t i = 1; i < new_image.height - 1; i++) {
  		for(uint32_t j = 1; j < new_image.width - 1; j++) {
- 			
- 			for(int32_t s_i = -1; s_i < 2; s_i++) {
- 				for (int32_t s_j = -1; s_j < 2; s_j++) {
- 					b += (source -> data + ((i + s_i) * new_image.width) + (j + s_j)) -> b;
- 					g += (source -> data + ((i + s_i) * new_image.width) + (j + s_j)) -> g;
- 					r += (source -> data + ((i + s_i) * new_image.width) + (j + s_j)) -> r;
- 				}
- 			}
-
- 			(new_image.data + (i * new_image.width) + j) -> b = b / 9;
- 			(new_image.data + (i * new_image.width) + j) -> g = g / 9;
- 			(new_image.data + (i * new_image.width) + j) -> r = r / 9;
-
- 			b = 0;
- 			g = 0;
- 			r = 0;
+ 			pixel_blur((struct pixel*)(new_image.data + (i * new_image.width) + j), (struct pixel*)(source -> data + (i * new_image.width) + j), source -> width);
  		}
  	}
 
