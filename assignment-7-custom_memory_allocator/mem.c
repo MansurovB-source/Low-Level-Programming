@@ -14,7 +14,7 @@ void* heap_init(size_t initial_size) {
 
 	head -> next = NULL;
 	head -> capacity = size - sizeof(struct mem);
-	head -> is_free = 1;
+	head -> is_free = true;
 
 	return (void*) (head + 1);
 }
@@ -26,11 +26,11 @@ void* _malloc(size_t query) {
 	if(ptr) {
 		new_ptr = (struct mem*) ((char*)ptr + sizeof(struct mem) + query);
 		new_ptr -> capacity = ptr -> capacity - query - sizeof(struct mem);
-		new_ptr -> is_free = 1;
+		new_ptr -> is_free = true;
 
 		ptr -> next = new_ptr;
 		ptr -> capacity = query;
-		ptr -> is_free = 0;
+		ptr -> is_free = false;
 		return (char*)ptr +sizeof(struct mem);
 	} else {
 		ptr = get_last_chunk(HEAP_START);
@@ -54,7 +54,7 @@ static void align_heap() {
 void _free(void* mem) {
 	struct mem* f_chunk = get_memory_chunk(HEAP_START, (struct mem*)((char*)mem - sizeof(struct mem)));
 	if(f_chunk) {
-		f_chunk -> is_free = 1;
+		f_chunk -> is_free = true;
 		align_heap();
 	}
 }
@@ -102,7 +102,7 @@ static struct mem* allocate_new_memory(struct mem* ptr, size_t query) {
 
 		(ptr -> next) -> next = NULL;
 		(ptr -> next) -> capacity = size - sizeof(struct mem);
-		(ptr -> next) -> is_free = 1;
+		(ptr -> next) -> is_free = true;
 
 		return (struct mem*) new_ptr;
 	}
